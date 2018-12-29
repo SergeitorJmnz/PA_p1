@@ -44,11 +44,11 @@ void Mostrar(const TCompeticion &c, unsigned &ok);
 void Inscribir(const TInfoDepor &d, TCompeticion &c, unsigned &ok);
 void Prueba(const string &nombre, const float &salto1, const float &salto2, const float &salto3, TCompeticion &c, unsigned &ok);
 void Descalificar(const TInfoDepor &d, TCompeticion &c, unsigned &ok);
-void Ganador(TCompeticion &c, int &x, unsigned &ok);
+void MostrarGanador(const TInfoDepor &d);
+void Ganador(TCompeticion &c, unsigned &ok);
 void Nacionalidad(const string &pais, const TCompeticion &c, unsigned &ok);
 //void Ordenar(TCompeticion &c);
 //int ordenar_puntuacion(TCompeticion &c, int pos);
-//unsigned buscar_ganador(const TCompeticion &c);
 unsigned buscar_deport(const string &nombre, const TCompeticion &c);
 float calc_mejormarca(const float &salto1, const float &salto2, const float &salto3);
 unsigned Menu();
@@ -58,7 +58,6 @@ void cod_error(unsigned cod);
 int main() {
     TCompeticion c;
     TInfoDepor d;
-    int gana = 0;
     string nombre, pais;
     float salto1, salto2, salto3;
     unsigned ok;
@@ -95,14 +94,7 @@ int main() {
             cod_error(ok);
             break;
         case 4:  // Ganador
-            Ganador(c,gana,ok);
-            cout << "El ganador de la prueba es ";
-            cout << c.depor[gana].nombre;
-            cout << ", de ";
-            cout << c.depor[gana].nacion;
-            cout << ". Con una puntuacion de ";
-            cout << c.depor[gana].mejorMarca;
-            cout << "." << endl;
+            Ganador(c,ok);
             cod_error(ok);
             break;
         case 5:   // Nacionalidad
@@ -116,8 +108,17 @@ int main() {
             cin >> d.nombre;
             Descalificar(d,c,ok);
             cod_error(ok);
+            break;
+        case 7:   // Ordenar
+
+            cod_error(ok);
+            break;
+        case 8:   // Vaciar
+
+            Vaciar(c);
+            break;
         }
-    } while (opcion != 0 );
+    } while (opcion != 0);
 }
 
 // -- Subalgoritmos ----
@@ -152,7 +153,7 @@ void Mostrar(const TCompeticion &c, unsigned &ok)
 
 void Inscribir(const TInfoDepor &d, TCompeticion &c, unsigned &ok)
 {
-    int i = buscar_deport(d.nombre, c);
+    unsigned i = buscar_deport(d.nombre, c);
     if(i < c.nDepor)
     {
         ok = YA_EXISTE;
@@ -196,12 +197,23 @@ void Descalificar(const TInfoDepor &d, TCompeticion &c, unsigned &ok)
     }
 }
 
-void Ganador(TCompeticion &c, int &gana, unsigned &ok)
+void MostrarGanador(const TInfoDepor &d)
 {
+            cout << "El ganador de la prueba es ";
+            cout << d.nombre;
+            cout << ", de ";
+            cout << d.nacion;
+            cout << ". Con una puntuacion de ";
+            cout << d.mejorMarca;
+            cout << "." << endl;
+}
+
+void Ganador(TCompeticion &c, unsigned &ok)
+{
+    unsigned gana = 0;
     if(c.nDepor>0)
     {
         ok = OK;
-        //gana = 0;
         for(int i = 0; i<c.nDepor;i++)
         {
             if(c.depor[i].mejorMarca>c.depor[gana].mejorMarca)
@@ -209,6 +221,7 @@ void Ganador(TCompeticion &c, int &gana, unsigned &ok)
                 gana = i;
             }
         }
+        MostrarGanador(c.depor[gana]);
     } else {
         ok = LISTA_VACIA;
     }
@@ -217,6 +230,7 @@ void Ganador(TCompeticion &c, int &gana, unsigned &ok)
 void Nacionalidad(const string &pais, const TCompeticion &c, unsigned &ok)
 {
     bool hay_pais = false;
+    unsigned gana = 0;
     if(c.nDepor>0){
         for(int x=0; x<c.nDepor; x++)
         {
@@ -225,10 +239,13 @@ void Nacionalidad(const string &pais, const TCompeticion &c, unsigned &ok)
                 ok = OK;
                 hay_pais = true;
                 MostrarDep(c.depor[x]);
-
-                //if()
+                if(c.depor[x].mejorMarca>c.depor[gana].mejorMarca)
+                {
+                    gana = x;
+                }
             }
         }
+        MostrarGanador(c.depor[gana]);
         if(!hay_pais)
         {
             ok = NO_DEPOR_NACION;
@@ -268,9 +285,6 @@ int ordenar_puntuacion(TCompeticion &c, int pos)
 }
 */
 
-
-
-
 unsigned buscar_deport(const string &nombre, const TCompeticion &c)
 {
     unsigned i = 0;
@@ -306,12 +320,14 @@ unsigned Menu()
     cout << "4. - Ganador" << endl;
     cout << "5. - Nacionalidad" << endl;
     cout << "6. - Descalificar" << endl;
+    cout << "7. - Ordenar por puntuacion" << endl;
+    cout << "8. - Vaciar lista de participantes" << endl;
     cout << endl;
     cout << "0. - Salir" << endl;
     do {
         cout << "Introduzca Opcion: ";
         cin >> opcion;
-    } while ( ! ((opcion >= 0) && (opcion <= 5)) );
+    } while ( ! ((opcion >= 0) && (opcion <= 8)) );
     return opcion;
 }
 
