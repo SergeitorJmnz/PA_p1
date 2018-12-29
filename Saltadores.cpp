@@ -47,7 +47,8 @@ void Descalificar(const TInfoDepor &d, TCompeticion &c, unsigned &ok);
 void MostrarGanador(const TInfoDepor &d);
 void Ganador(TCompeticion &c, unsigned &ok);
 void Nacionalidad(const string &pais, const TCompeticion &c, unsigned &ok);
-//void Ordenar(TCompeticion &c);
+void Ordenar(TCompeticion &c);
+unsigned posicion_mayor(const TCompeticion &c, unsigned pos);
 //int ordenar_puntuacion(TCompeticion &c, int pos);
 unsigned buscar_deport(const string &nombre, const TCompeticion &c);
 float calc_mejormarca(const float &salto1, const float &salto2, const float &salto3);
@@ -110,11 +111,9 @@ int main() {
             cod_error(ok);
             break;
         case 7:   // Ordenar
-
-            cod_error(ok);
+            Ordenar(c);
             break;
         case 8:   // Vaciar
-
             Vaciar(c);
             break;
         }
@@ -142,7 +141,8 @@ void MostrarDep(const TInfoDepor &d)
 void Mostrar(const TCompeticion &c, unsigned &ok)
 {
     if (c.nDepor > 0){
-        for(int i=0; i< c.nDepor; i++) {
+        for(int i=0; i< c.nDepor; i++)
+        {
             MostrarDep(c.depor[i]); // Muestra un deportista
         }
         ok = OK;
@@ -257,38 +257,39 @@ void Nacionalidad(const string &pais, const TCompeticion &c, unsigned &ok)
     }
 }
 
-/*
+
 void Ordenar(TCompeticion &c)
 {
-    for(int i=0;i<c.depor.size();i++){
-        if(c.depor[i].mejorMarca>c.depor[i+1].mejorMarca)
+    for(unsigned pos=0;pos<c.depor.size()-1;pos++)
+    {
+        unsigned pos_mayor = posicion_mayor(c,pos);
+        if(pos != pos_mayor)
         {
-            TInfoDepor aux = c.depor[i];
-            c.depor[i]=c.depor[i+1];
-            c.depor[i+1]=aux;
+            TInfoDepor aux = c.depor[pos];
+            c.depor[pos] = c.depor[pos_mayor];
+            c.depor[pos_mayor] = aux;
         }
     }
 }
 
-/*
-int ordenar_puntuacion(TCompeticion &c, int pos)
+unsigned posicion_mayor(const TCompeticion &c, unsigned pos)
 {
-    int mejor_puntuacion = pos;
-    for(int i=mejor_puntuacion+1; i<c.depor.size(); i++)
+    int pos_mayor = pos;
+    for(unsigned i = pos_mayor+1; i<c.depor.size();pos++)
     {
-        if(c.depor[i].mejorMarca>c.depor[mejor_puntuacion].mejorMarca)
+        if(c.depor[i].mejorMarca>c.depor[pos_mayor].mejorMarca)
         {
-            mejor_puntuacion=i;
+            pos_mayor=i;
         }
     }
-    return mejor_puntuacion;
+    return pos_mayor;
 }
-*/
 
 unsigned buscar_deport(const string &nombre, const TCompeticion &c)
 {
     unsigned i = 0;
-    while((i < c.nDepor)&&(nombre != c.depor[i].nombre)){
+    while((i < c.nDepor)&&(nombre != c.depor[i].nombre))
+    {
         i++;
     }
     return i;
