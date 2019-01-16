@@ -21,7 +21,6 @@ const int YA_EXISTE = 3;
 const int NO_EXISTE = 4;
 const int NO_DEPOR_NACION = 5;
 
-
 // -- Tipos ------------
 typedef struct{
     string nombre;
@@ -48,9 +47,8 @@ void MostrarGanador(const TInfoDepor &d);
 void Ganador(TCompeticion &c, unsigned &ok);
 void Nacionalidad(const string &pais, const TCompeticion &c, unsigned &ok);
 void Ordenar(TCompeticion &c, unsigned &ok);
-//unsigned posicion_mayor(const TCompeticion &c, unsigned pos);
-//int ordenar_puntuacion(TCompeticion &c, int pos);
 
+// -- Subalgoritmos auxiliares ---
 void Inscribir_Depor_Ord(const TInfoDepor &d, TCompeticion &c);
 void Inscribir_Ord(TCompeticion &c, int pos, const TInfoDepor &d);
 unsigned buscar_pos_depor(const float &nombre, const TCompeticion &c);
@@ -274,6 +272,7 @@ void Ordenar(TCompeticion &c, unsigned &ok)
     }
 }
 
+// -- Subalgoritmos auxiliares ---
 void Inscribir_Depor_Ord(const TInfoDepor &d, TCompeticion &c)
 {
     int pos = buscar_pos_depor(d.mejorMarca,c);
@@ -299,7 +298,6 @@ unsigned buscar_pos_depor(const float &mejorMarca, const TCompeticion &c)
     }
     return i;
 }
-
 
 unsigned buscar_deport(const string &nombre, const TCompeticion &c)
 {
