@@ -47,9 +47,13 @@ void Descalificar(const TInfoDepor &d, TCompeticion &c, unsigned &ok);
 void MostrarGanador(const TInfoDepor &d);
 void Ganador(TCompeticion &c, unsigned &ok);
 void Nacionalidad(const string &pais, const TCompeticion &c, unsigned &ok);
-void Ordenar(TCompeticion &c);
-unsigned posicion_mayor(const TCompeticion &c, unsigned pos);
+void Ordenar(TCompeticion &c, unsigned &ok);
+//unsigned posicion_mayor(const TCompeticion &c, unsigned pos);
 //int ordenar_puntuacion(TCompeticion &c, int pos);
+
+void Inscribir_Depor_Ord(const TInfoDepor &d, TCompeticion &c);
+void Inscribir_Ord(TCompeticion &c, int pos, const TInfoDepor &d);
+unsigned buscar_pos_depor(const float &nombre, const TCompeticion &c);
 unsigned buscar_deport(const string &nombre, const TCompeticion &c);
 float calc_mejormarca(const float &salto1, const float &salto2, const float &salto3);
 unsigned Menu();
@@ -111,7 +115,8 @@ int main() {
             cod_error(ok);
             break;
         case 7:   // Ordenar
-            Ordenar(c);
+            Ordenar(c,ok);
+            cod_error(ok);
             break;
         case 8:   // Vaciar
             Vaciar(c);
@@ -257,33 +262,44 @@ void Nacionalidad(const string &pais, const TCompeticion &c, unsigned &ok)
     }
 }
 
-
-void Ordenar(TCompeticion &c)
+void Ordenar(TCompeticion &c, unsigned &ok)
 {
-    for(unsigned pos=0;pos<c.depor.size()-1;pos++)
+    ok = OK;
+    int nDepor = c.nDepor;
+    c.nDepor = 1;
+    while(c.nDepor < nDepor)
     {
-        unsigned pos_mayor = posicion_mayor(c,pos);
-        if(pos != pos_mayor)
-        {
-            TInfoDepor aux = c.depor[pos];
-            c.depor[pos] = c.depor[pos_mayor];
-            c.depor[pos_mayor] = aux;
-        }
+        TInfoDepor depor = c.depor[c.nDepor];
+        Inscribir_Depor_Ord(depor,c);
     }
 }
 
-unsigned posicion_mayor(const TCompeticion &c, unsigned pos)
+void Inscribir_Depor_Ord(const TInfoDepor &d, TCompeticion &c)
 {
-    int pos_mayor = pos;
-    for(unsigned i = pos_mayor+1; i<c.depor.size();pos++)
-    {
-        if(c.depor[i].mejorMarca>c.depor[pos_mayor].mejorMarca)
-        {
-            pos_mayor=i;
-        }
-    }
-    return pos_mayor;
+    int pos = buscar_pos_depor(d.mejorMarca,c);
+    Inscribir_Ord(c,pos,d);
 }
+
+void Inscribir_Ord(TCompeticion &c, int pos, const TInfoDepor &d)
+{
+    for (int i=c.nDepor; i>pos; i--)
+    {
+        c.depor[i] = c.depor[i-1];
+    }
+    c.depor[pos] = d;
+    c.nDepor++;
+}
+
+unsigned buscar_pos_depor(const float &mejorMarca, const TCompeticion &c)
+{
+    unsigned i = 0;
+    while((i < c.nDepor)&&(mejorMarca<=c.depor[i].mejorMarca))
+    {
+        i++;
+    }
+    return i;
+}
+
 
 unsigned buscar_deport(const string &nombre, const TCompeticion &c)
 {
