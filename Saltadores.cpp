@@ -1,11 +1,3 @@
-/* Practica evaluable 2018/2019
-
-Nombre y apellidos: Sergio Jiménez Salmerón
-DNI: 15428591F
-Grado: Sistemas Electrónicos
-Grupo: B
-
-*/
 #include <iostream>
 #include <string>
 #include <array>
